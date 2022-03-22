@@ -9,6 +9,7 @@ const ProductInquiry = require("./product_inquiry")
 const Partner = require("./partner")
 const LookBook = require('./lookbook')
 const Calendar = require("./calendar")
+const Token = require('./token')
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
@@ -29,6 +30,7 @@ db.ProductInquiry = ProductInquiry;
 db.Partner = Partner
 db.Calendar = Calendar
 db.LookBook = LookBook
+db.Token = Token
 
 User.init(sequelize)
 Inquiry.init(sequelize)
@@ -40,6 +42,7 @@ ProductInquiry.init(sequelize)
 Partner.init(sequelize)
 Calendar.init(sequelize)
 LookBook.init(sequelize)
+Token.init(sequelize)
 
 User.associate(db);
 Inquiry.associate(db);
@@ -48,5 +51,6 @@ ProductDetail.associate(db);
 ProductDisplay.associate(db);
 ProductReview.associate(db);
 ProductInquiry.associate(db);
+Token.associate(db);
 
 module.exports = db;

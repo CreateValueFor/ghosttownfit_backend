@@ -3,7 +3,10 @@ const Sequelize = require('sequelize')
 module.exports = class Inquiry extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-
+            title: {
+                type: Sequelize.STRING(200),
+                allowNull: false,
+            },
             contents: {
                 type: Sequelize.TEXT,
             },

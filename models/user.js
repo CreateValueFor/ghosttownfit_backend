@@ -5,24 +5,25 @@ module.exports = class User extends Sequelize.Model {
         return super.init({
             userid: {
                 type: Sequelize.STRING(200),
-                allowNull: false,
+                allowNull: true,
                 unique: true,
             },
             password: {
                 type: Sequelize.STRING(200),
-                allowNull: false,
+                allowNull: true,
             },
             name: {
                 type: Sequelize.STRING(200),
                 allowNull: false,
+                // defaultValue: ""
             },
             phone: {
                 type: Sequelize.STRING(20),
-                allowNull: false,
+                allowNull: true,
             },
             email: {
                 type: Sequelize.STRING(200),
-                allowNull: false,
+                allowNull: true,
             },
             point: {
                 type: Sequelize.INTEGER.UNSIGNED,
@@ -42,7 +43,17 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.NOW
+            },
+            provider: {
+                type: Sequelize.STRING(10),
+                allowNull: false,
+                defaultValue: 'local',
+            },
+            snsId: {
+                type: Sequelize.STRING(30),
+                allowNull: true
             }
+
         }, {
             sequelize,
             timestamps: false,
@@ -57,5 +68,6 @@ module.exports = class User extends Sequelize.Model {
     static associate(db) {
 
         db.User.hasMany(db.Inquiry, { foreignKey: "inquirer", sourceKey: 'id' })
+        db.User.hasOne(db.Token, { foreignKey: "userId", sourceKey: 'id' })
     }
 }
