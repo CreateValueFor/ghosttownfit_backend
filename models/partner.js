@@ -29,5 +29,6 @@ module.exports = class Partner extends Sequelize.Model {
         });
     }
     static associate(db) {
+
     }
 }

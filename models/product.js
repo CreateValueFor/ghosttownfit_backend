@@ -5,27 +5,42 @@ module.exports = class Product extends Sequelize.Model {
         return super.init({
             title: {
                 type: Sequelize.STRING(200),
-                allowNull: false
+                allowNull: false,
             },
             price: {
                 type: Sequelize.INTEGER.UNSIGNED,
                 allowNull: false,
             },
-            size: {
+            productCode: {
+                type: Sequelize.STRING(100),
+                allowNull: false,
+                unique: true
+            },
+            sojae: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
             },
-            thumb: {
-                type: Sequelize.STRING(200),
-                allowNull: false
+            fit: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+            },
+            detail: {
+                type: Sequelize.TEXT,
+                allowNull: false,
+                defaultValue: ''
+            },
+            model: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+            },
+            setak: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
             },
             count: {
                 type: Sequelize.INTEGER.UNSIGNED,
                 allowNull: false,
                 defaultValue: 0
-            },
-            detail: {
-                type: Sequelize.TEXT,
             },
             flag: {
                 type: Sequelize.TINYINT,
@@ -42,8 +57,8 @@ module.exports = class Product extends Sequelize.Model {
         });
     }
     static associate(db) {
-        db.Product.hasMany(db.ProductDetail, { foreignKey: "productId", sourceKey: 'id' })
-        db.Product.hasMany(db.ProductDisplay, { foreignKey: "productId", sourceKey: 'id' })
+        db.Product.hasMany(db.ProductInquiry, { foreignKey: "productId", sourceKey: 'id' })
         db.Product.hasMany(db.ProductReview, { foreignKey: "productId", sourceKey: 'id' })
+        db.Product.belongsTo(db.SubCategory, { foreignKey: "categoryId", targetKey: 'id' })
     }
 }

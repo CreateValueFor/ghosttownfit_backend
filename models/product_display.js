@@ -18,6 +18,6 @@ module.exports = class ProductDisplay extends Sequelize.Model {
         });
     }
     static associate(db) {
-        db.ProductDisplay.belongsTo(db.Product, { foreignKey: "productId", targetKey: 'id' })
+        db.ProductDisplay.belongsTo(db.ProductColor, { foreignKey: "productId", targetKey: 'id' })
     }
 }
