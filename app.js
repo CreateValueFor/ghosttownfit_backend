@@ -36,7 +36,7 @@ sequelize.sync({ force: false })
     });
 
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/build')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -52,6 +52,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/', (req, res, next) => {
+    res.sendFile(path.join(__dirname, 'public/build/index.html'))
+})
 
 app.use('/auth', authRouter);
 app.use('/inquiry', inquiryRouter)

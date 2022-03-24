@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
     code: 200,
     message: "hello"
   })
-  res.render('index', { title: 'Express' });
+  res.sendFile(path.join(__dirname, 'public/build/index.html'))
 });
 
 module.exports = router;

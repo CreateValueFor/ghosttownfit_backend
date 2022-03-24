@@ -26,8 +26,6 @@ const upload = multer({
 // 상품 전체 불러오기
 router.get('/product', async (req, res, next) => {
 
-
-
     const products = await Product.findAll({
         include: [ProductInquiry, ProductReview]
     })
@@ -46,7 +44,7 @@ router.get('/product/:productId', async (req, res, next) => {
 
     const product = await Product.findOne({
         where: { id: productId },
-        include: [ProductDisplay, ProductInquiry]
+        include: [ProductReview, ProductInquiry]
     })
     if (!product) {
         return res.json({
@@ -60,6 +58,34 @@ router.get('/product/:productId', async (req, res, next) => {
         data: product
     })
 });
+
+//제품 수정하기
+router.patch('/product/:productId', async (req, res, next) => {
+    const productId = req.params.productId
+    const { title, price, sojae, fit, detail, model, setak, categoryId, productCode } = req.body
+    const newProduct = await Product.update({
+        title, price, sojae, fit, detail, model, setak, categoryId, productCode
+    }, { where: { id: productId } })
+    return res.json({
+        success: true,
+        message: "업데이트완료",
+        data: newProduct
+    })
+})
+
+//제품 삭제하기
+router.delete('/product/:productId', async (req, res, next) => {
+    const productId = req.params.productId
+
+    await Product.destroy({
+        where: { id: productId }
+    })
+
+    res.json({
+        success: true,
+        message: '삭제 완료'
+    })
+})
 
 
 //제품 개요 만들기
