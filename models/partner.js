@@ -7,6 +7,15 @@ module.exports = class Partner extends Sequelize.Model {
                 type: Sequelize.STRING(200),
                 allowNull: false,
             },
+            title: {
+                type: Sequelize.STRING(200),
+                allowNull: false
+            },
+            role: {
+                type: Sequelize.STRING(200),
+                allowNull: false
+            },
+
             contents: {
                 type: Sequelize.TEXT,
                 allowNull: false,
@@ -14,6 +23,14 @@ module.exports = class Partner extends Sequelize.Model {
             image: {
                 type: Sequelize.STRING(200),
                 allowNull: false
+            },
+            instagram: {
+                type: Sequelize.STRING(200),
+                allowNull: true
+            },
+            youtube: {
+                type: Sequelize.STRING(200),
+                allowNull: true
             },
             flag: {
                 type: Sequelize.TINYINT,

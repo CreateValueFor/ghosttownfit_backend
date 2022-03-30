@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
 const Inquiry = require("../models/inquiry");
+const User = require("../models/user")
 const { isLoggedIn } = require('./middlewares');
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
     const offset = Number(req.query.page) * 5
     const inquires = await Inquiry.findAll({
-        limit: 5,
-        offset: offset
+        limit: 10,
+        offset: offset,
+        include: [User]
     })
     res.json({
         success: true,
@@ -18,11 +20,13 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/', isLoggedIn, async (req, res, next) => {
-    console.log(req)
+
 
     const { contents, isPrivate, name, password, title } = req.body;
+
+
     const nInquiry = await Inquiry.create({
-        contents, isPrivate, name, password, title
+        contents, isPrivate, name, password, title, inquirer: req.user.id
     })
     return res.json({
         success: true,
@@ -30,5 +34,24 @@ router.post('/', isLoggedIn, async (req, res, next) => {
         data: nInquiry
     })
 })
+
+router.post('/:inquiryId', async (req, res, next) => {
+    const { contents } = req.body;
+    const inquiryId = req.params.inquiryId;
+
+    const exInquiry = await Inquiry.findOne({ where: { id: inquiryId } })
+    const data = await exInquiry.update({
+        reply: contents
+    })
+    res.json({
+        success: true,
+        message: "답변 성공",
+        data
+    })
+
+
+
+})
+
 
 module.exports = router;

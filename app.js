@@ -14,6 +14,8 @@ const authRouter = require('./routes/auth');
 const inquiryRouter = require('./routes/inquiry');
 const adminRouter = require("./routes/admin")
 const settingRouter = require("./routes/setting")
+const calendarRouter = require("./routes/calendar")
+const partnerRouter = require("./routes/partner")
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -37,6 +39,7 @@ sequelize.sync({ force: false })
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public/build')));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -60,6 +63,8 @@ app.use('/auth', authRouter);
 app.use('/inquiry', inquiryRouter)
 app.use('/admin', adminRouter)
 app.use('/setting', settingRouter)
+app.use('/calendar', calendarRouter)
+app.use('/partner', partnerRouter)
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
