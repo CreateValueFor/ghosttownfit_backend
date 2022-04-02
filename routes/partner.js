@@ -6,7 +6,8 @@ const uuid = require('uuid').v4
 const path = require('path')
 const fs = require('fs');
 
-const PUBLIC_URL = "http://localhost:8000/uploads/partner/"
+// const PUBLIC_URL = "http://localhost:8000/uploads/partner/"
+const PUBLIC_URL = "http://13.125.119.128:8000/uploads/partner/"
 
 const upload = multer({
 
