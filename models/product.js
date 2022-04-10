@@ -17,11 +17,11 @@ module.exports = class Product extends Sequelize.Model {
                 unique: true
             },
             sojae: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             fit: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             detail: {
@@ -30,17 +30,22 @@ module.exports = class Product extends Sequelize.Model {
                 defaultValue: ''
             },
             model: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             setak: {
-                type: Sequelize.STRING(20),
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             count: {
                 type: Sequelize.INTEGER.UNSIGNED,
                 allowNull: false,
                 defaultValue: 0
+            },
+            hasOption: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
             },
             flag: {
                 type: Sequelize.TINYINT,
@@ -59,6 +64,7 @@ module.exports = class Product extends Sequelize.Model {
     static associate(db) {
         db.Product.hasMany(db.ProductInquiry, { foreignKey: "productId", sourceKey: 'id' })
         db.Product.hasMany(db.ProductReview, { foreignKey: "productId", sourceKey: 'id' })
+        db.Product.hasMany(db.ProductColor, { foreignKey: "productId", sourceKey: 'id' })
         db.Product.belongsTo(db.SubCategory, { foreignKey: "categoryId", targetKey: 'id' })
     }
 }

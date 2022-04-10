@@ -3,6 +3,7 @@ const User = require('./user')
 const Inquiry = require('./inquiry')
 const Product = require("./product")
 const ProductColor = require("./product_color")
+const ProductColorSize = require("./product_color_size")
 const ProductInventory = require("./product_inventory")
 
 const ProductDisplay = require("./product_display")
@@ -28,6 +29,7 @@ db.User = User;
 db.Inquiry = Inquiry;
 db.Product = Product;
 db.ProductColor = ProductColor;
+db.ProductColorSize = ProductColorSize;
 db.ProductInventory = ProductInventory;
 
 db.ProductDisplay = ProductDisplay;
@@ -45,6 +47,7 @@ Inquiry.init(sequelize)
 Product.init(sequelize)
 ProductColor.init(sequelize)
 ProductInventory.init(sequelize)
+ProductColorSize.init(sequelize)
 
 ProductDisplay.init(sequelize)
 ProductReview.init(sequelize)
@@ -61,6 +64,7 @@ Inquiry.associate(db);
 Product.associate(db);
 ProductColor.associate(db);
 ProductInventory.associate(db)
+ProductColorSize.associate(db)
 
 ProductDisplay.associate(db);
 ProductReview.associate(db);
