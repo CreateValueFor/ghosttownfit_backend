@@ -30,6 +30,16 @@ module.exports = class ProductColor extends Sequelize.Model {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
                 defaultValue: false
+            },
+            saleCount: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0
+            },
+            salePercent: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0
             }
 
         }, {
@@ -45,6 +55,7 @@ module.exports = class ProductColor extends Sequelize.Model {
     static associate(db) {
         // db.Product.hasMany(db.ProductDetail, { foreignKey: "productId", sourceKey: 'id' })
         db.ProductColor.hasMany(db.ProductDisplay, { foreignKey: "productColorId", sourceKey: 'id' })
+        db.ProductColor.hasMany(db.ProductImage, { foreignKey: "productColorId", sourceKey: 'id' })
         db.ProductColor.hasMany(db.ProductColorSize, { foreignKey: "productColorId", sourceKey: 'id' })
         db.ProductColor.belongsTo(db.Product, { foreignKey: "productId", targetKey: 'id' })
     }

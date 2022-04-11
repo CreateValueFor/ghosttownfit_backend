@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Product = require("../models/product")
 const ProductDisplay = require("../models/product_display")
+const ProductImage = require("../models/product_images")
 const ProductInquiry = require("../models/product_inquiry")
 
 const Category = require("../models/sub_category")
@@ -22,13 +23,18 @@ const upload = multer({
             if (!isExist) {
                 fs.mkdirSync(`public/products/${colorId}`)
                 fs.mkdirSync(`public/products/${colorId}/thumb`)
+                fs.mkdirSync(`public/products/${colorId}/images`)
                 fs.mkdirSync(`public/products/${colorId}/displaies`)
             }
             const field = file.fieldname;
             if (field === 'thumb') {
                 fsExtra.emptyDirSync(`public/products/${colorId}/thumb`)
                 fsExtra.emptyDirSync(`public/products/${colorId}/displaies`)
+                fsExtra.emptyDirSync(`public/products/${colorId}/images`)
                 done(null, `public/products/${colorId}/thumb`)
+            } else if (field === 'images') {
+                done(null, `public/products/${colorId}/images`)
+
             } else {
                 done(null, `public/products/${colorId}/displaies`)
 
@@ -91,7 +97,7 @@ router.get('/product/color/:colorId', async (req, res, next) => {
     const color = await ProductColor.findOne({
         where: { id: colorId },
         include: [
-            ProductDisplay, ProductColorSize, { model: Product, attributes: ["title"] }
+            ProductDisplay, ProductImage, ProductColorSize, { model: Product, attributes: ["title"] }
         ]
     })
     res.json({
@@ -155,6 +161,8 @@ router.post('/product/:productId/color', async (req, res, next) => {
     const { name, seksangList } = req.body;
     const productId = req.params.productId;
 
+    await Product.update({ hasOption: true }, { where: { id: productId } })
+
     const newColor = await ProductColor.create({
         productId,
         name
@@ -179,7 +187,7 @@ router.post('/product/:productId/color', async (req, res, next) => {
 })
 
 //색상 상세 소개 등록하기
-router.post("/product/color/:colorId", upload.fields([{ name: "thumb" }, { name: "displaies" }]), async (req, res, next) => {
+router.post("/product/color/:colorId", upload.fields([{ name: "thumb" }, { name: "displaies" }, { name: "images" }]), async (req, res, next) => {
 
     const colorId = req.params.colorId
     const { detail } = req.body
@@ -198,6 +206,14 @@ router.post("/product/color/:colorId", upload.fields([{ name: "thumb" }, { name:
         detail
     }, { where: { id: colorId } })
     await ProductDisplay.destroy({ where: { productColorId: colorId } })
+    await ProductImage.destroy({ where: { productColorId: colorId } })
+
+    images.images.forEach(async item => {
+        await ProductImage.create({
+            image: item.filename,
+            productColorId: colorId
+        })
+    })
 
     images.displaies.forEach(async item => {
         await ProductDisplay.create({
@@ -208,12 +224,13 @@ router.post("/product/color/:colorId", upload.fields([{ name: "thumb" }, { name:
 
 
     return res.json({
-        success: true
+        success: true,
+        message: "정상 등록 완료"
     })
 })
 
 // 제품 컬러 삭제하기 
-router.delete("/product/product/:colorId", async (req, res, next) => {
+router.delete("/product/color/:colorId", async (req, res, next) => {
     const { colorId } = req.params;
     const data = ProductColor.destroy({ where: { id: colorId } });
     return res.json({

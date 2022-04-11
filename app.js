@@ -40,7 +40,8 @@ sequelize.sync({ force: false })
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public/build')));
-app.use('/public/products', express.static('public/products'));
+// app.use('/public/products', express.static('public/products'));
+app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -67,6 +68,12 @@ app.use('/setting', settingRouter)
 app.use('/calendar', calendarRouter)
 app.use('/partner', partnerRouter)
 app.use('/product', productRouter)
+
+const index = path.resolve(__dirname, './public/build/index.html')
+
+app.use('*', (req, res) => {
+    res.sendFile(index)
+})
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
