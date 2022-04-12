@@ -52,6 +52,14 @@ module.exports = class User extends Sequelize.Model {
             snsId: {
                 type: Sequelize.STRING(30),
                 allowNull: true
+            },
+            smsAgree: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false
+            },
+            emailAgree: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false
             }
 
         }, {

@@ -11,13 +11,14 @@ const jwt = require('jsonwebtoken');
 var router = express.Router();
 
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
-    const { userid, name, password, phone, email } = req.body;
+    const { userid, name, password, phone, email, smsAgree, emailAgree } = req.body;
     console.log(name)
     try {
         const exUser = await User.findOne({ where: { email } });
         if (exUser) {
             return res.status(400).json({
                 success: false,
+                code: "D01",
                 message: '해당 이메일로 등록된 계정이 존재합니다.'
             })
         }
@@ -25,20 +26,54 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
         if (exxUser) {
             return res.status(400).json({
                 success: false,
+                code: 'D02',
                 message: '해당 아이디로 등록된 계정이 존재합니다.'
             })
         }
         const hash = await bcrypt.hash(password, 12);
-        await User.create({
+        const newUser = await User.create({
             userid,
             password: hash,
             name,
             phone,
-            email
-        });
+            email,
+            smsAgree,
+            emailAgree
+        }, { raw: true });
+
+        const refreshToken = jwt.sign({},
+            process.env.JWT_SECRET, {
+            expiresIn: '14d',
+            issuer: "ghosttown"
+        })
+        await Token.upsert({
+            userId: newUser.id,
+            refreshToken
+        })
+
+        const accessToken = jwt.sign({ id: newUser.id, nick: newUser.nick },
+            process.env.JWT_SECRET, {
+            expiresIn: '1d',
+            issuer: 'ghosttown'
+        }
+        )
+
+        res.cookie('access', accessToken);
+        res.cookie('refresh', refreshToken)
+
         return res.json({
             success: true,
-            message: "유저 생성이 완료되었습니다."
+            message: "유저 생성이 완료되었습니다.",
+            data: {
+                userid: newUser.userid,
+                name: newUser.name,
+                point: newUser.point,
+                level: newUser.level
+            },
+            token: {
+                access: accessToken,
+                refresh: refreshToken
+            }
         })
     } catch (error) {
         console.error(error);
@@ -76,7 +111,7 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
             const accessToken = jwt.sign({ id: user.id, nick: user.nick },
                 process.env.JWT_SECRET, {
-                expiresIn: '5s',
+                expiresIn: '1d',
                 issuer: 'ghosttown'
             }
             )
@@ -87,6 +122,16 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
             return res.json({
                 success: true,
                 message: '로그인 성공. 토큰 발급',
+                data: {
+                    userid: user.userid,
+                    name: user.name,
+                    point: user.point,
+                    level: user.level
+                },
+                token: {
+                    access: accessToken,
+                    refresh: refreshToken
+                }
             });
         });
     })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
