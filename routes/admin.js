@@ -16,6 +16,7 @@ const fs = require('fs');
 const fsExtra = require("fs-extra");
 
 const upload = multer({
+
     storage: multer.diskStorage({
         destination(req, file, done) {
             const { colorId } = req.params;
@@ -45,7 +46,7 @@ const upload = multer({
             done(null, uuid() + ext);
         }
     }),
-    limits: { fileSize: 5 * 1024 * 1024 }
+    limits: { fileSize: 1024 * 1024 * 1024 }
 })
 
 // 상품 전체 불러오기
