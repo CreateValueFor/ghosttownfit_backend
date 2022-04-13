@@ -64,7 +64,7 @@ module.exports = class Product extends Sequelize.Model {
     static associate(db) {
         db.Product.hasMany(db.ProductInquiry, { foreignKey: "productId", sourceKey: 'id' })
         db.Product.hasMany(db.ProductReview, { foreignKey: "productId", sourceKey: 'id' })
-        db.Product.hasMany(db.ProductColor, { foreignKey: "productId", sourceKey: 'id' })
+        db.Product.hasMany(db.ProductColor, { foreignKey: "productId", sourceKey: 'id', onDelete: 'cascade' })
         db.Product.belongsTo(db.SubCategory, { foreignKey: "categoryId", targetKey: 'id' })
     }
 }

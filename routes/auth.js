@@ -77,7 +77,9 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
         })
     } catch (error) {
         console.error(error);
-        return next(error);
+        return res.json({
+            error
+        });
     }
 })
 

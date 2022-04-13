@@ -13,9 +13,14 @@ module.exports = class Inquiry extends Sequelize.Model {
             isPrivate: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
+                defaultValue: false,
             },
             reply: {
                 type: Sequelize.TEXT,
+            },
+            thumb: {
+                type: Sequelize.STRING(100),
+
             },
             flag: {
                 type: Sequelize.TINYINT,

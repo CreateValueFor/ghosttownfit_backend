@@ -3,6 +3,26 @@ var router = express.Router();
 const Inquiry = require("../models/inquiry");
 const User = require("../models/user")
 const { isLoggedIn } = require('./middlewares');
+const multer = require("multer");
+const jwt = require('jsonwebtoken');
+const path = require('path')
+const uuid = require('uuid').v4;
+
+
+const upload = multer({
+
+    storage: multer.diskStorage({
+        destination(req, file, done) {
+
+            done(null, 'public/inquiry/common')
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname);
+            done(null, uuid() + ext);
+        }
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 }
+})
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -19,14 +39,32 @@ router.get('/', async (req, res, next) => {
     })
 });
 
-router.post('/', isLoggedIn, async (req, res, next) => {
+router.post('/', upload.single('thumb'), async (req, res, next) => {
+
+    const token = req.headers.authorization.split(' ')[1]
+    let thumb;
+    if (req.file) {
+
+        thumb = req.file.filename
+    }
 
 
-    const { contents, isPrivate, name, password, title } = req.body;
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+
+    const exUser = await User.findOne({ where: { id } })
+    if (!exUser) {
+        return res.json({
+            success: false,
+            messaeg: "유저가 존재하지 않습니다."
+        })
+    }
+
+
+    const { contents, isPrivate, name, title } = req.body;
 
 
     const nInquiry = await Inquiry.create({
-        contents, isPrivate, name, password, title, inquirer: req.user.id
+        contents, isPrivate, name, title, thumb, inquirer: exUser.id
     })
     return res.json({
         success: true,
