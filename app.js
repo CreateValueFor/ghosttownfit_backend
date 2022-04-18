@@ -42,6 +42,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public/build')));
 // app.use('/public/products', express.static('public/products'));
 app.use('/public', express.static('public'));
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
