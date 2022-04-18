@@ -7,7 +7,8 @@ const path = require('path')
 const fs = require('fs');
 
 // const PUBLIC_URL = "http://localhost:8000/uploads/partner/"
-const PUBLIC_URL = "http://13.125.119.128:8000/uploads/partner/"
+// const PUBLIC_URL = "http://13.125.119.128:8000/uploads/partner/"
+const PUBLIC_URL = "https://ghost.callenge.co.kr/uploads/partner/"
 
 const upload = multer({
 
