@@ -162,6 +162,9 @@ router.post("/check", async (req, res, next) => {
                     console.log('지원하지 않음');
                     break;
                 case 'paid':
+                    order.update({
+                        status: 1
+                    })
                     res.json({
                         success: true,
                         message: "일반 결제 성공"
