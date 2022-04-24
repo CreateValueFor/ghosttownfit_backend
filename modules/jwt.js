@@ -1,9 +1,6 @@
-const randToken = require('rand-token');
+
 const jwt = require('jsonwebtoken');
-const secretKey = require('../config/secretKey').secretKey;
-const options = require('../config/secretKey').options;
-const TOKEN_EXPIRED = -3;
-const TOKEN_INVALID = -2;
+
 
 exports.verify = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]
