@@ -47,9 +47,19 @@ router.post('/', upload.single('thumb'), async (req, res, next) => {
 
         thumb = req.file.filename
     }
+    let id;
+
+    try {
+        id = jwt.verify(token, process.env.JWT_SECRET).id;
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: error,
+
+        })
+    }
 
 
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
     const exUser = await User.findOne({ where: { id } })
     if (!exUser) {

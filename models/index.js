@@ -5,6 +5,8 @@ const Product = require("./product")
 const ProductColor = require("./product_color")
 const ProductColorSize = require("./product_color_size")
 const ProductInventory = require("./product_inventory")
+const Order = require("./order")
+const ProductOrder = require("./product_order")
 
 const ProductDisplay = require("./product_display")
 const ProductImage = require("./product_images")
@@ -33,6 +35,7 @@ db.ProductColor = ProductColor;
 db.ProductColorSize = ProductColorSize;
 db.ProductInventory = ProductInventory;
 db.ProductImage = ProductImage;
+db.Order = Order;
 
 db.ProductDisplay = ProductDisplay;
 db.ProductReview = ProductReview;
@@ -43,6 +46,7 @@ db.LookBook = LookBook
 db.Token = Token
 db.MainCategory = MainCategory
 db.SubCategory = SubCategory
+db.ProductOrder = ProductOrder
 
 User.init(sequelize)
 Inquiry.init(sequelize)
@@ -51,6 +55,8 @@ ProductColor.init(sequelize)
 ProductInventory.init(sequelize)
 ProductColorSize.init(sequelize)
 ProductImage.init(sequelize)
+Order.init(sequelize)
+ProductOrder.init(sequelize)
 
 ProductDisplay.init(sequelize)
 ProductReview.init(sequelize)
@@ -63,6 +69,7 @@ MainCategory.init(sequelize)
 SubCategory.init(sequelize)
 
 
+
 User.associate(db);
 Inquiry.associate(db);
 Product.associate(db);
@@ -70,7 +77,8 @@ ProductColor.associate(db);
 ProductInventory.associate(db)
 ProductColorSize.associate(db)
 ProductImage.associate(db);
-
+Order.associate(db);
+ProductOrder.associate(db)
 ProductDisplay.associate(db);
 ProductReview.associate(db);
 ProductInquiry.associate(db);
