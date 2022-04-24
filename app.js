@@ -17,6 +17,7 @@ const settingRouter = require("./routes/setting")
 const calendarRouter = require("./routes/calendar")
 const partnerRouter = require("./routes/partner")
 const productRouter = require("./routes/product")
+const orderRouter = require("./routes/order")
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -69,6 +70,7 @@ app.use('/setting', settingRouter)
 app.use('/calendar', calendarRouter)
 app.use('/partner', partnerRouter)
 app.use('/product', productRouter)
+app.use('/order', orderRouter)
 
 const index = path.resolve(__dirname, './public/build/index.html')
 

@@ -58,5 +58,6 @@ module.exports = class ProductColor extends Sequelize.Model {
         db.ProductColor.hasMany(db.ProductImage, { foreignKey: "productColorId", sourceKey: 'id' })
         db.ProductColor.hasMany(db.ProductColorSize, { foreignKey: "productColorId", sourceKey: 'id' })
         db.ProductColor.belongsTo(db.Product, { foreignKey: "productId", targetKey: 'id', onDelete: 'cascade' })
+
     }
 }
