@@ -18,6 +18,18 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.STRING(20),
                 allowNull: false
             },
+            name: {
+                type: Sequelize.STRING(200),
+
+            },
+            thumb: {
+                type: Sequelize.STRING(200),
+
+            },
+            colorId: {
+                type: Sequelize.INTEGER,
+
+            },
             address1: {
                 type: Sequelize.STRING(50),
                 allowNull: false
@@ -37,6 +49,15 @@ module.exports = class User extends Sequelize.Model {
             status: {
                 type: Sequelize.TINYINT,
                 defaultValue: 0
+            },
+            eachAmount: {
+                type: Sequelize.INTEGER,
+
+                defaultValue: 0
+            },
+            count: {
+                type: Sequelize.INTEGER,
+                allowNull: true
             },
             purchaseAmount: {
                 type: Sequelize.INTEGER,

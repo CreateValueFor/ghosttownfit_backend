@@ -70,7 +70,7 @@ app.use('/setting', settingRouter)
 app.use('/calendar', calendarRouter)
 app.use('/partner', partnerRouter)
 app.use('/product', productRouter)
-app.use('/order', orderRouter)
+app.use('/v1/order', orderRouter)
 
 const index = path.resolve(__dirname, './public/build/index.html')
 

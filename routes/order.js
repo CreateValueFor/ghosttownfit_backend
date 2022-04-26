@@ -4,11 +4,14 @@ const { verify } = require('../modules/jwt');
 const User = require("../models/user")
 const Order = require("../models/order");
 const ProductColorSize = require("../models/product_color_size");
+const ProductColor = require("../models/product_color");
 const ProductOrder = require("../models/product_order");
 const dotenv = require('dotenv');
-
+const { Op } = require('sequelize')
 const axios = require("axios")
 dotenv.config()
+
+const LIMIT = 10
 
 // 주문번호 설정
 router.post("/", verify, async (req, res, next) => {
@@ -37,24 +40,22 @@ router.post("/", verify, async (req, res, next) => {
 
         const serialNumber = getCurrentDate() + phone.replaceAll("-", "");
 
-        const newOrder = await Order.create({
-            serialNumber,
-            receiver,
-            phone,
-            address1,
-            address2,
-            postCode,
-            deliveryMessage,
-            buyer: buyer.id,
-            discount,
-            purchaseAmount,
-            purchaseMethod
-        })
-
-
         await Promise.all(
 
             productList.map(async item => {
+                const newOrder = await Order.create({
+                    serialNumber,
+                    receiver,
+                    phone,
+                    address1,
+                    address2,
+                    postCode,
+                    deliveryMessage,
+                    buyer: buyer.id,
+                    discount,
+                    purchaseAmount,
+                    purchaseMethod
+                })
                 const exSize = await ProductColorSize.findOne({ where: { id: item.id } });
 
                 if (exSize === null) {
@@ -81,6 +82,14 @@ router.post("/", verify, async (req, res, next) => {
                     })
                 }
                 else {
+                    newOrder.update({
+                        name: item.name,
+                        thumb: item.thumb,
+                        colorId: item.colorId,
+                        eachAmount: item.price,
+                        count: item.count,
+                    })
+
                     await ProductOrder.create({
                         count: item.count,
                         OrderId: newOrder.id,
@@ -91,12 +100,11 @@ router.post("/", verify, async (req, res, next) => {
             })
         )
 
-
         res.json({
             success: true,
             message: "주문 준비 완료",
             serialNumber,
-            amount: newOrder.purchaseAmount,
+            amount: purchaseAmount,
             buyer: {
                 name: buyer.name,
                 email: buyer.email,
@@ -182,6 +190,39 @@ router.post("/check", async (req, res, next) => {
             success: false,
             error
         })
+    }
+})
+
+router.get("/customer", verify, async (req, res, next) => {
+    const { page } = req.query
+    const id = req.userId;
+
+    try {
+        const orders = await Order.findAll({
+            where: {
+                buyer: id,
+                status: { [Op.gte]: 1 }
+            },
+            offset: (page || 0) * LIMIT,
+            limit: LIMIT,
+            include: [{
+                model: ProductColorSize,
+                include: [{
+
+                    model: ProductColor,
+                    attributes: ['name', 'thumb']
+                }],
+                attributes: ['size']
+
+
+            }]
+        })
+        return res.json({
+            success: true,
+            data: orders || []
+        })
+    } catch (error) {
+        next(error)
     }
 })
 

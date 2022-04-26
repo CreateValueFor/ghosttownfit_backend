@@ -3,8 +3,16 @@ const jwt = require('jsonwebtoken');
 
 
 exports.verify = (req, res, next) => {
-    const token = req.headers.authorization.split(' ')[1]
+
     try {
+        if (!req.headers.authorization) {
+            res.json({
+                success: false,
+                message: "토큰이 존재하지 않습니다."
+            })
+        }
+        const token = req.headers.authorization.split(' ')[1]
+
         id = jwt.verify(token, process.env.JWT_SECRET).id;
         req.userId = id
         next()
