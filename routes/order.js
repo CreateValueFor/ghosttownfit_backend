@@ -54,7 +54,8 @@ router.post("/", verify, async (req, res, next) => {
                     buyer: buyer.id,
                     discount,
                     purchaseAmount,
-                    purchaseMethod
+                    purchaseMethod,
+                    status: 1
                 })
                 const exSize = await ProductColorSize.findOne({ where: { id: item.id } });
 
