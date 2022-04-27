@@ -7,6 +7,7 @@ var db = require('../models')
 const User = require("../models/user")
 var router = express.Router();
 
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
@@ -88,5 +89,7 @@ router.post('/register', async (req, res, next) => {
     })
   })
 })
+
+
 
 module.exports = router;

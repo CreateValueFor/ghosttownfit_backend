@@ -7,6 +7,7 @@ const { isLoggedIn, isNotLoggedIn, verifyToken, checkToken } = require('./middle
 const User = require('../models/user');
 const Token = require("../models/token")
 const jwt = require('jsonwebtoken');
+const { verify } = require('../modules/jwt');
 
 var router = express.Router();
 
@@ -164,7 +165,15 @@ router.get('/kakao/callback', passport.authenticate('kakao', {
     res.redirect('/');
 });
 
-
+router.delete('/', verify, async (req, res, next) => {
+    const userId = req.userId;
+    const result = await User.destroy({ where: { id: userId } })
+    return res.json({
+        success: true,
+        message: "유저가 삭제되었습니다.",
+        data: result
+    })
+})
 // Following function will generate access token that will be valid for 2 minutes
 function generateAccessToken(payload) {
     return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2m' });
