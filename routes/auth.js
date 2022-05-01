@@ -174,6 +174,12 @@ router.delete('/', verify, async (req, res, next) => {
         data: result
     })
 })
+
+router.get('/token', verify, (req, res, next) => {
+    return res.json({
+        success: true
+    })
+})
 // Following function will generate access token that will be valid for 2 minutes
 function generateAccessToken(payload) {
     return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2m' });
