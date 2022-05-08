@@ -115,6 +115,7 @@ router.post("/", verify, async (req, res, next) => {
         })
 
     } catch (error) {
+        console.log(error)
 
         next(error)
 

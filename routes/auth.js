@@ -180,6 +180,16 @@ router.get('/token', verify, (req, res, next) => {
         success: true
     })
 })
+
+router.get('/profile', verify, async (req, res, next) => {
+    const userId = req.userId;
+    const exUser = await User.findOne({ where: { id: userId } })
+    return res.json({
+        success: true,
+        data: exUser
+    })
+})
+
 // Following function will generate access token that will be valid for 2 minutes
 function generateAccessToken(payload) {
     return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2m' });
