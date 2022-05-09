@@ -100,7 +100,7 @@ router.get('/naver', async(req,res,next)=>{
 
         }
     }))
-    const builder = new xml2js.Builder();
+    const builder = new xml2js.Builder({headless:true});
     const xmlFile = builder.buildObject(productArray)
     console.log(productArray)
     
