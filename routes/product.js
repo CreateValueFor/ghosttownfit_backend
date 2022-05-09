@@ -67,24 +67,46 @@ router.get('/naver', async(req,res,next)=>{
     const {product, supplementSearch,optionSearch} = req.query;
 
     const productArray = await Promise.all(product.map(async (item)=>{
-        const product = await ProductColor.findOne({where:{id: item.id}});
+        console.log(item)
+        const product = await ProductColor.findOne({where:{id: item.id},include:[Product]});
+        if(!product){
+            return {
+                
+            }
+        }
+        console.log()
         return {
-            id: product,
+            product: {
+                id: product.id,
+                merchangtProductId : product.id,
+                name :  product.Product.title + product.name,
+                basePrice: product.Product.price,
+                taxType: "TAX",
+                infoUrl: 'https://ghosttown.kr/product/'+ product.id,
+                imageUrl: `https://ghosttown.kr/public/products/${product.id}/thumb/${product.thumb}`,
+                shippingPolicy : {
+                    groupId : 'all',
+                    method: 'DELIVERY',
+                    feeType: 'CONDITIONAL_FREE',
+                    feePayType: "PREPAYED",
+                    feePrice: 3500,
+                    conditionalFree:{
+                        basePrice: 100000,
+                    }
+                }
+
+
+            },
 
         }
     }))
-    // while(true){
-    //     const productId = req.query.product[i][id];
-    //     if(!productId){
-    //         break;
-            
-    //     }
-    //     productArray.push(productId);
-    //         i ++;
-    // }
+    const builder = new xml2js.Builder();
+    const xmlFile = builder.buildObject(productArray)
+    console.log(productArray)
     
 
     res.type('application/xml');
+    return res.send(xmlFile)
     return res.send(xml({
         products:productArray
     }))
