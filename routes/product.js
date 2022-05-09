@@ -7,7 +7,9 @@ const ProductDisplay = require('../models/product_display');
 const ProductImage = require('../models/product_images');
 const SubCategory = require('../models/sub_category');
 const { Op } = require("sequelize")
-
+const xml = require("xml")
+const {create} = require('xmlbuilder2')
+const xml2js = require('xml2js')
 
 // 상품 전체 불러오기
 router.get('/color', async (req, res, next) => {
@@ -59,5 +61,40 @@ router.get('/color', async (req, res, next) => {
         data
     })
 })
+
+router.get('/naver', async(req,res,next)=>{
+    
+    const {product, supplementSearch,optionSearch} = req.query;
+
+    const productArray = await Promise.all(product.map(async (item)=>{
+        const product = await ProductColor.findOne({where:{id: item.id}});
+        return {
+            id: product,
+
+        }
+    }))
+    // while(true){
+    //     const productId = req.query.product[i][id];
+    //     if(!productId){
+    //         break;
+            
+    //     }
+    //     productArray.push(productId);
+    //         i ++;
+    // }
+    
+
+    res.type('application/xml');
+    return res.send(xml({
+        products:productArray
+    }))
+
+    return res.send({
+        success:true,
+        data: productArray
+    })
+})
+
+
 
 module.exports = router;

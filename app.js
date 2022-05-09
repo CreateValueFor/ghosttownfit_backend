@@ -59,9 +59,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req, res, next) => {
-    res.sendFile(path.join(__dirname, 'public/build/index.html'))
-})
+
 
 app.use('/auth', authRouter);
 app.use('/inquiry', inquiryRouter)
@@ -71,6 +69,9 @@ app.use('/calendar', calendarRouter)
 app.use('/partner', partnerRouter)
 app.use('/product', productRouter)
 app.use('/v1/order', orderRouter)
+app.get('/', (req, res, next) => {
+    res.sendFile(path.join(__dirname, 'public/build/index.html'))
+})
 
 const index = path.resolve(__dirname, './public/build/index.html')
 

@@ -31,6 +31,9 @@
     "rand-token": "^1.0.1",
     "sequelize": "^6.17.0",
     "sequelize-cli": "^6.4.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xml": "^1.0.1",
+    "xml2js": "^0.4.23",
+    "xmlbuilder2": "^3.0.2"
   }
 }
