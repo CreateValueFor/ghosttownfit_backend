@@ -14,6 +14,109 @@ dotenv.config()
 const LIMIT = 10
 
 // 주문번호 설정
+router.post("/naver", async (req, res, next) => {
+
+    const { receiver, phone, address1, address2, postCode, deliveryMessage, productList, discount, purchaseAmount, purchaseMethod } = req.body
+
+    let buyer
+
+    if (!receiver || !phone || !address1 || !address2 || !postCode || !productList) {
+        return res.json({
+            success: false,
+            message: "정보가 누락되었습니다."
+        })
+    }
+
+    try {
+
+        buyer = await User.findOne({ where: { id: 5 } });
+        const serialNumber = getCurrentDate() + phone.replaceAll("-", "");
+
+        await Promise.all(
+
+            productList.map(async item => {
+                console.log(item)
+                const newOrder = await Order.create({
+                    serialNumber,
+                    receiver,
+                    phone,
+                    address1,
+                    address2,
+                    postCode,
+                    deliveryMessage,
+                    buyer: buyer.id,
+                    discount,
+                    purchaseAmount,
+                    purchaseMethod,
+                    status: 1
+                })
+                const exSize = await ProductColorSize.findOne({ where: { id: item.id } });
+
+                if (exSize === null) {
+
+                    newOrder.update({
+                        status: -2
+                    })
+                    return res.json({
+                        success: false,
+                        message: "상품이 존재하지 않음"
+                    })
+                } else if (exSize.count < item.count) {
+                    newOrder.update({
+                        status: -1
+                    })
+                    return res.json({
+                        success: false,
+                        message: "재고가 부족합니다."
+                    })
+                } else if (item.count === 0) {
+                    return res.json({
+                        success: false,
+                        message: "주문 수량이 없습니다."
+                    })
+                }
+                else {
+                    newOrder.update({
+                        name: item.name,
+                        thumb: item.thumb,
+                        colorId: item.colorId,
+                        eachAmount: item.price,
+                        count: item.count,
+                    })
+
+                    await ProductOrder.create({
+                        count: item.count,
+                        OrderId: newOrder.id,
+                        ProductColorSizeId: exSize.id
+                    })
+                }
+                // ProductOrder.create({})
+            })
+        )
+
+        res.json({
+            success: true,
+            message: "주문 준비 완료",
+            serialNumber,
+            amount: purchaseAmount,
+            buyer: {
+                name: buyer.name,
+                email: buyer.email,
+                phone: buyer.phone,
+            }
+
+        })
+
+    } catch (error) {
+        console.log(error)
+
+        next(error)
+
+    }
+
+
+
+})
 router.post("/", verify, async (req, res, next) => {
 
     const { receiver, phone, address1, address2, postCode, deliveryMessage, productList, discount, purchaseAmount, purchaseMethod } = req.body
